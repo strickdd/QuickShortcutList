@@ -41,6 +41,23 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
+    # Create zip file (only for Release configuration)
+    - name: Create ZIP archive
+      if: matrix.configuration == 'Release'
+      run: |
+        $zipFileName = "QuickShortcutList-${{ github.sha }}.zip"
+        Compress-Archive -Path "${{ env.Output_Directory }}/*" -DestinationPath $zipFileName
+      shell: pwsh
+
+    # Upload the ZIP file as artifact (only for Release configuration)
+    - name: Upload build artifact
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-artifact@v3
+      with:
+        name: QuickShortcutList-Release
+        path: QuickShortcutList-${{ github.sha }}.zip
+        retention-days: 90
+
     # Decode the base 64 encoded pfx and save the Signing_Certificate
     #- name: Decode the pfx
     #  run: |
