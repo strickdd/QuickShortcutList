@@ -22,7 +22,7 @@ public class QuickShortcutList
         notifyIcon.ContextMenuStrip = Update_ContextMenu();
 
         // Build the path to the icon file
-        string iconFilePath = System.IO.Path.Combine(Application.StartupPath, $"images\\ICOs\\UTCOffset.ico");
+        string iconFilePath = System.IO.Path.Combine(Application.StartupPath, $"images\\ICOs\\QuickShortcutList.ico");
 
         // Set the icon and text of the NotifyIcon object
         notifyIcon.Icon = new System.Drawing.Icon(iconFilePath);

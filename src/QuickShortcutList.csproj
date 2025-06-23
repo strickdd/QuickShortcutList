@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <!-- TODO: <ApplicationIcon>images\ICOs\UTCOffset.ico</ApplicationIcon> -->
+    <ApplicationIcon>images\ICOs\QuickShortcutList.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
