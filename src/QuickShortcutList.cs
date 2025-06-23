@@ -10,6 +10,8 @@ public class QuickShortcutList
 {
     private NotifyIcon notifyIcon;
     private FileSystemWatcher configWatcher;
+    private bool isConfigChanging = false;
+    private System.Threading.Timer configChangeTimer;
 
     public QuickShortcutList()
     {
@@ -20,6 +22,9 @@ public class QuickShortcutList
 
         // Create a context menu and assign it to the NotifyIcon
         notifyIcon.ContextMenuStrip = Update_ContextMenu();
+
+        // Add MouseClick handler to show the menu on left click as well
+        notifyIcon.MouseClick += NotifyIcon_MouseClick;
 
         // Build the path to the icon file
         string iconFilePath = System.IO.Path.Combine(Application.StartupPath, $"images\\ICOs\\QuickShortcutList.ico");
@@ -48,15 +53,53 @@ public class QuickShortcutList
 
     private void OnConfigChanged(object sender, FileSystemEventArgs e)
     {
-        try
+        // Debounce the event to avoid multiple refreshes for a single save
+        if (!isConfigChanging)
         {
-            var newConfig = ReadConfig(); // Will throw if malformed
-            notifyIcon.ContextMenuStrip = Update_ContextMenu(); // Rebuild menu
-        }
-        catch
-        {
-            MessageBox.Show("The YAML configuration is malformed. Keeping the existing menu.",
-            "Config Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            isConfigChanging = true;
+
+            // Use a timer to debounce multiple events
+            if (configChangeTimer == null)
+            {
+                configChangeTimer = new System.Threading.Timer((state) =>
+                {
+                    try
+                    {
+                        // Invoke on the UI thread
+                        if (notifyIcon.ContextMenuStrip != null)
+                        {
+                            notifyIcon.ContextMenuStrip.Invoke((MethodInvoker)delegate
+                            {
+                                try
+                                {
+                                    var newConfig = ReadConfig(); // Will throw if malformed
+                                    notifyIcon.ContextMenuStrip = Update_ContextMenu(); // Rebuild menu
+
+                                    // Optional: Show a notification that config was reloaded
+                                    notifyIcon.ShowBalloonTip(2000, "Config Reloaded", "The configuration has been updated.", ToolTipIcon.Info);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show($"Error updating menu: {ex.Message}", "Config Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                finally
+                                {
+                                    isConfigChanging = false;
+                                }
+                            });
+                        }
+                    }
+                    catch
+                    {
+                        isConfigChanging = false;
+                    }
+                }, null, 500, System.Threading.Timeout.Infinite); // 500ms delay
+            }
+            else
+            {
+                // Reset the timer
+                configChangeTimer.Change(500, System.Threading.Timeout.Infinite);
+            }
         }
     }
 
@@ -134,6 +177,20 @@ public class QuickShortcutList
         contextMenu.Items.Add(closeMenuItem);
 
         return contextMenu;
+    }
+
+    private void NotifyIcon_MouseClick(object sender, MouseEventArgs e)
+    {
+        // Check if it's a left click
+        if (e.Button == MouseButtons.Left)
+        {
+            // Calculate the position for the menu to appear near the cursor
+            // Get the menu associated with the NotifyIcon
+            ContextMenuStrip menu = notifyIcon.ContextMenuStrip;
+
+            // Show the menu at the current mouse position
+            menu.Show(Cursor.Position);
+        }
     }
 
     private void AddSubdirectoriesAndFiles(ToolStripMenuItem parentMenuItem, DirectoryInfo parentDir, int currentDepth, int maxDepth)
