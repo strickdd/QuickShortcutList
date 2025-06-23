@@ -4,7 +4,7 @@ Windows 11 no longer allows pinning a folder to the taskbar. This feature was su
 
 QuickShortcutList is a lightweight system tray application that provides quick access to your favorite directories and their contents through a customizable menu. This is more extensible than the previous versions of Windows allowed since you can now customize a list of folders to display.
 
-![Screenshot of application running.](./docs/images/Example.png)
+![Screenshot of application running.](/docs/images/Example.png)
 
 ## Building/Compiling
 This was developed in VSCode, but should work in VisualStudio as well. Build the QuickShortcutList.csproj to compile the application.
