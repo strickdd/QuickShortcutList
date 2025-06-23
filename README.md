@@ -1,6 +1,10 @@
 # QuickShortcutList
 ## Description
-QuickShortcutList is a lightweight system tray application that provides quick access to your favorite directories and their contents through a customizable menu.
+Windows 11 no longer allows pinning a folder to the taskbar. This feature was supported in most previous versions of Windows - most recently Windows 10 - and was removed from 11. Adding the folder to the taskbar allowed for quick access to the contents of a folder and was extremely useful for quick access shortcuts without having to open the Start menu.
+
+QuickShortcutList is a lightweight system tray application that provides quick access to your favorite directories and their contents through a customizable menu. This is more extensible than the previous versions of Windows allowed since you can now customize a list of folders to display.
+
+![Screenshot of application running.](./docs/images/Example.png)
 
 ## Building/Compiling
 This was developed in VSCode, but should work in VisualStudio as well. Build the QuickShortcutList.csproj to compile the application.
@@ -29,3 +33,23 @@ Folders:
 MaxDepth: 3
 SortFoldersAlphabetically: true
 ```
+
+## Publishing a Release
+These steps will create a GitHub release with the version number selected. The source code and a compiled version of the application will all be linked to the release.
+
+1. Find the current tags within the repo
+```PowerShell
+# List current tags
+git tag -l
+```
+
+2. Determine if this is a `Major.Minor.Patch` increase and select the next version number accordingly
+3. Update the `$version` value below with the new `Major.Minor.Patch` and run
+```PowerShell
+$version = 'v1.0.0'
+git tag -a $version -m "Initial release $version"
+git push origin $version
+```
+
+## TODO
+- [ ]: determine how to add release notes instead of just saying "look at the commits"
