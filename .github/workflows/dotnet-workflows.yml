@@ -40,20 +40,26 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    #### Create zip file with version name instead of commit SHA
-    ###- name: Create ZIP archive
-    ###  if: matrix.configuration == 'Release' && startsWith(github.ref, 'refs/tags/')
-    ###  run: |
-    ###    $version = "${{ github.ref_name }}"
-    ###    $zipFileName = "QuickShortcutList-$version.zip"
-    ###    Compress-Archive -Path "${{ env.Output_Directory }}/*" -DestinationPath $zipFileName
-    ###  shell: pwsh
-
-    # Upload the ZIP file as artifact (only for Release configuration)
     - name: Upload build artifact
-      if: matrix.configuration == 'Release'
+      if: matrix.configuration == 'Release' && startsWith(github.ref, 'refs/tags/')
       uses: actions/upload-artifact@v4
       with:
         name: QuickShortcutList-Release-${{ github.ref_name }}
         path: ${{ env.Output_Directory }}
         retention-days: 90
+
+    - name: Create GitHub Release
+      if: matrix.configuration == 'Release' && startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: QuickShortcutList-${{ github.ref_name }}.zip
+        name: QuickShortcutList ${{ github.ref_name }}
+        body: |
+          QuickShortcutList release version ${{ github.ref_name }}
+          
+          ## What's New
+          - See commit history for details
+        draft: false
+        prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-beta') || contains(github.ref, '-alpha') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
