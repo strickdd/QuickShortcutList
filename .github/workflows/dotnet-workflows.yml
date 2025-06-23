@@ -20,7 +20,7 @@ jobs:
 
     env:
       Solution_Name: src/QuickShortcutList.sln
-      Output_Directory: src/bin/Release/net8.0-windows
+      Output_Directory: src/bin/Release/net8.0-windows/publish
 
     steps:
     - name: Checkout
