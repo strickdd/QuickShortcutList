@@ -144,8 +144,7 @@ public class QuickShortcutList
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error accessing folder {configFolder.Name}: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error accessing folder {configFolder.Name}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -165,8 +164,7 @@ public class QuickShortcutList
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to open config file: {ex.Message}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to open config file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         };
         contextMenu.Items.Add(editConfigItem);
@@ -252,7 +250,7 @@ public class QuickShortcutList
             }
 
         }
-        catch (Exception ex)
+        catch
         {
             // Silently handle errors for subdirectories (like access denied)
             // Could log these errors if needed
