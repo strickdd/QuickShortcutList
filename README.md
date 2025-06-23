@@ -53,3 +53,4 @@ git push origin $version
 
 ## TODO
 - [ ]: determine how to add release notes instead of just saying "look at the commits"
+- [ ]: Consider update alter functionality to check for new GH releases and prompt the user to update
